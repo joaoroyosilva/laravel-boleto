@@ -2,30 +2,29 @@
 
 namespace Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240;
 
+use \Eduardokum\LaravelBoleto\Contracts\Cnab\Retorno\Cnab240\Trailer as TrailerContract;
 use Eduardokum\LaravelBoleto\MagicTrait;
-use Eduardokum\LaravelBoleto\Contracts\Cnab\Retorno\Cnab240\Trailer as TrailerContract;
 
 class Trailer implements TrailerContract
 {
     use MagicTrait;
-
     /**
-     * @var int
+     * @var integer
      */
     protected $numeroLote;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $tipoRegistro;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $qtdLotesArquivo;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $qtdRegistroArquivo;
 
@@ -40,7 +39,7 @@ class Trailer implements TrailerContract
     /**
      * @param mixed $numeroLote
      *
-     * @return Trailer
+     * @return $this
      */
     public function setNumeroLote($numeroLote)
     {
@@ -60,7 +59,7 @@ class Trailer implements TrailerContract
     /**
      * @param mixed $qtdLotesArquivo
      *
-     * @return Trailer
+     * @return $this
      */
     public function setQtdLotesArquivo($qtdLotesArquivo)
     {
@@ -80,7 +79,7 @@ class Trailer implements TrailerContract
     /**
      * @param mixed $qtdRegistroArquivo
      *
-     * @return Trailer
+     * @return $this
      */
     public function setQtdRegistroArquivo($qtdRegistroArquivo)
     {
@@ -100,7 +99,7 @@ class Trailer implements TrailerContract
     /**
      * @param mixed $tipoRegistro
      *
-     * @return Trailer
+     * @return $this
      */
     public function setTipoRegistro($tipoRegistro)
     {

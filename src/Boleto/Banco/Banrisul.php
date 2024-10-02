@@ -2,11 +2,10 @@
 
 namespace Eduardokum\LaravelBoleto\Boleto\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\CalculoDV;
 use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
+use Eduardokum\LaravelBoleto\CalculoDV;
 use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Eduardokum\LaravelBoleto\Util;
 
 class Banrisul extends AbstractBoleto implements BoletoContract
 {
@@ -73,21 +72,20 @@ class Banrisul extends AbstractBoleto implements BoletoContract
     protected $codigoCliente;
 
     /**
-     * Seta dia para baixa automática
+     * Seta dias para baixa automática
      *
      * @param int $baixaAutomatica
      *
-     * @return Banrisul
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     public function setDiasBaixaAutomatica($baixaAutomatica)
     {
         if ($this->getDiasProtesto() > 0) {
-            throw new ValidationException('Você deve usar dias de protesto ou dias de baixa, nunca os 2');
+            throw new \Exception('Você deve usar dias de protesto ou dias de baixa, nunca os 2');
         }
         $baixaAutomatica = (int) $baixaAutomatica;
         $this->diasBaixaAutomatica = $baixaAutomatica > 0 ? $baixaAutomatica : 0;
-
         return $this;
     }
 
@@ -101,10 +99,8 @@ class Banrisul extends AbstractBoleto implements BoletoContract
         $numero_boleto = $this->getNumero();
         $nossoNumero = Util::numberFormatGeral($numero_boleto, 8)
             . CalculoDV::banrisulNossoNumero(Util::numberFormatGeral($numero_boleto, 8));
-
         return $nossoNumero;
     }
-
     /**
      * Método que retorna o nosso numero usado no boleto. alguns bancos possuem algumas diferenças.
      *
@@ -114,12 +110,11 @@ class Banrisul extends AbstractBoleto implements BoletoContract
     {
         return substr_replace($this->getNossoNumero(), '-', -2, 0);
     }
-
     /**
      * Método para gerar o código da posição de 20 a 44
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function getCampoLivre()
     {
@@ -144,14 +139,13 @@ class Banrisul extends AbstractBoleto implements BoletoContract
      *
      * @return array
      */
-    public static function parseCampoLivre($campoLivre)
-    {
+    public static function parseCampoLivre($campoLivre) {
         return [
-            'carteira'        => substr($campoLivre, 0, 1),
-            'agencia'         => substr($campoLivre, 2, 4),
-            'contaCorrente'   => substr($campoLivre, 6, 7),
-            'nossoNumero'     => substr($campoLivre, 13, 8),
-            'nossoNumeroDv'   => null,
+            'carteira' => substr($campoLivre, 0, 1),
+            'agencia' => substr($campoLivre, 2, 4),
+            'contaCorrente' => substr($campoLivre, 6, 7),
+            'nossoNumero' => substr($campoLivre, 13, 8),
+            'nossoNumeroDv' => null,
             'nossoNumeroFull' => substr($campoLivre, 13, 8),
         ];
     }

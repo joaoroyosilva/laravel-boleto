@@ -1,24 +1,22 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240;
 
-use ForceUTF8\Encoding;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Cnab\Remessa\AbstractRemessa as AbstractRemessaGeneric;
+use ForceUTF8\Encoding;
 
 abstract class AbstractRemessa extends AbstractRemessaGeneric
 {
     protected $tamanho_linha = 240;
 
     /**
-     * Caractere de fim de linha
+     * Caracter de fim de linha
      *
      * @var string
      */
     protected $fimLinha = "\r\n";
 
     /**
-     * Caractere de fim de arquivo
+     * Caracter de fim de arquivo
      *
      * @var null
      */
@@ -30,11 +28,11 @@ abstract class AbstractRemessa extends AbstractRemessaGeneric
      * @var array
      */
     protected $aRegistros = [
-        self::HEADER       => [],
-        self::HEADER_LOTE  => [],
-        self::DETALHE      => [],
+        self::HEADER => [],
+        self::HEADER_LOTE => [],
+        self::DETALHE => [],
         self::TRAILER_LOTE => [],
-        self::TRAILER      => [],
+        self::TRAILER => [],
     ];
 
     /**
@@ -48,6 +46,7 @@ abstract class AbstractRemessa extends AbstractRemessaGeneric
      * @return mixed
      */
     abstract protected function headerLote();
+
 
     /**
      * Função que gera o trailer (footer) do arquivo.
@@ -148,17 +147,17 @@ abstract class AbstractRemessa extends AbstractRemessaGeneric
      * Gera o arquivo, retorna a string.
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function gerar()
     {
-        if (! $this->isValid($messages)) {
-            throw new ValidationException('Campos requeridos pelo banco, aparentam estar ausentes ' . $messages);
+        if (!$this->isValid($messages)) {
+            throw new \Exception('Campos requeridos pelo banco, aparentam estar ausentes ' . $messages);
         }
 
         $stringRemessa = '';
         if ($this->iRegistros < 1) {
-            throw new ValidationException('Nenhuma linha detalhe foi adicionada');
+            throw new \Exception('Nenhuma linha detalhe foi adicionada');
         }
 
         $this->header();

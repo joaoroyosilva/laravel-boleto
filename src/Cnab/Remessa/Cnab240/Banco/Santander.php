@@ -1,13 +1,25 @@
 <?php
 
+/**
+ * Created by PhpStorm.
+ * User: simetriatecnologia
+ * Date: 15/09/16
+ * Time: 14:02
+ *
+ * Updated by Guilherme Couto.
+ * User: guicouto
+ * Email: ccoutoguilherme@gmail.com
+ * Date: 09/07/2018
+ * Time: 23:11
+ */
+
 namespace Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
 use Eduardokum\LaravelBoleto\CalculoDV;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\AbstractRemessa;
 use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 use Eduardokum\LaravelBoleto\Contracts\Cnab\Remessa as RemessaContract;
+use Eduardokum\LaravelBoleto\Util;
 
 class Santander extends AbstractRemessa implements RemessaContract
 {
@@ -20,6 +32,7 @@ class Santander extends AbstractRemessa implements RemessaContract
     const OCORRENCIA_NAO_PROTESTAR = '10';
     const OCORRENCIA_SUSTAR_PROTESTO = '18';
     const OCORRENCIA_ALT_OUTROS_DADOS = '31';
+
     const PROTESTO_SEM = '0';
     const PROTESTO_DIAS_CORRIDOS = '1';
     const PROTESTO_DIAS_UTEIS = '2';
@@ -67,7 +80,7 @@ class Santander extends AbstractRemessa implements RemessaContract
     /**
      * Seta o codigo do cliente.
      *
-     * @param mixed $codigoCliente
+     * @param  mixed $codigoCliente
      * @return Santander
      */
     public function setCodigoCliente($codigoCliente)
@@ -80,8 +93,8 @@ class Santander extends AbstractRemessa implements RemessaContract
     /**
      * @param BoletoContract $boleto
      *
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     public function addBoleto(BoletoContract $boleto)
     {
@@ -99,14 +112,14 @@ class Santander extends AbstractRemessa implements RemessaContract
     /**
      * @param BoletoContract $boleto
      *
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     protected function segmentoP(BoletoContract $boleto)
     {
         $this->iniciaDetalhe();
         $this->add(1, 3, Util::onlyNumbers($this->getCodigoBanco()));
-        $this->add(4, 7, sprintf('%04d', $this->getIdremessa()));
+        $this->add(4, 7, sprintf("%04d", $this->getIdremessa()));
         $this->add(8, 8, '3');
         $this->add(9, 13, Util::formatCnab('9', $this->iRegistrosLote, 5));
         $this->add(14, 14, 'P');
@@ -127,9 +140,9 @@ class Santander extends AbstractRemessa implements RemessaContract
         $this->add(18, 21, Util::formatCnab('9', $this->getAgencia(), 4));
         $this->add(22, 22, $this->getAgenciaDv() ?: Util::formatCnab('9', '', 1));
         $this->add(23, 31, Util::formatCnab('9', $this->getConta(), 9));
-        $this->add(32, 32, ! is_null($this->getContaDv()) ? $this->getContaDv() : CalculoDV::santanderContaCorrente($this->getAgencia(), $this->getConta()));
+        $this->add(32, 32, $this->getContaDv() ?: CalculoDV::santanderContaCorrente($this->getAgencia(), $this->getConta()));
         $this->add(33, 41, Util::formatCnab('9', $this->getConta(), 9));
-        $this->add(42, 42, ! is_null($this->getContaDv()) ? $this->getContaDv() : CalculoDV::santanderContaCorrente($this->getAgencia(), $this->getConta()));
+        $this->add(42, 42, $this->getContaDv() ?: CalculoDV::santanderContaCorrente($this->getAgencia(), $this->getConta()));
         $this->add(43, 44, '');
         $this->add(45, 57, Util::formatCnab('9', $boleto->getNossoNumero(), 13));
         $this->add(58, 58, Util::formatCnab('9', $this->getCarteiraNumero() > 200 ? '1' : '5', 1));
@@ -149,12 +162,12 @@ class Santander extends AbstractRemessa implements RemessaContract
         $this->add(118, 118, ($boleto->getJuros() !== null && $boleto->getJuros() > 0) ? '2' : '3');    //3 = ISENTO | 1 = R$ ao dia | 2 = % ao mês
         $this->add(119, 126, Util::formatCnab('9', ($boleto->getJuros() !== null && $boleto->getJuros() > 0) ? $boleto->getDataVencimento()->format('dmY') : 0, 8));
         $this->add(127, 141, Util::formatCnab('9', $boleto->getJuros(), 15, 5));
-        $this->add(142, 142, $boleto->getDesconto() > 0 ? '1' : '0'); //0 = SEM DESCONTO | 1 = VALOR FIXO | 2 = PERCENTUAL
+        $this->add(142, 142, $boleto->getDesconto() > 0  ? '1' : '0'); //0 = SEM DESCONTO | 1 = VALOR FIXO | 2 = PERCENTUAL
         $this->add(143, 150, $boleto->getDesconto() > 0 ? $boleto->getDataDesconto()->format('dmY') : '00000000');
         $this->add(151, 165, Util::formatCnab('9', $boleto->getDesconto(), 15, 2));
         $this->add(166, 180, Util::formatCnab('9', 0, 15, 2));
         $this->add(181, 195, Util::formatCnab('9', 0, 15, 2));
-        $this->add(196, 220, Util::formatCnab('X', $boleto->getNumeroControle(), 25));
+        $this->add(196, 220, '');
         $this->add(221, 221, self::PROTESTO_SEM);
         if ($boleto->getDiasProtesto() > 0) {
             $this->add(221, 221, self::PROTESTO_DIAS_UTEIS);
@@ -172,15 +185,15 @@ class Santander extends AbstractRemessa implements RemessaContract
     /**
      * @param BoletoContract $boleto
      *
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     public function segmentoQ(BoletoContract $boleto)
     {
         $this->iniciaDetalhe();
 
         $this->add(1, 3, Util::onlyNumbers($this->getCodigoBanco()));
-        $this->add(4, 7, sprintf('%04d', $this->getIdremessa()));
+        $this->add(4, 7, sprintf("%04d", $this->getIdremessa()));
         $this->add(8, 8, '3');
         $this->add(9, 13, Util::formatCnab('9', $this->iRegistrosLote, 5));
         $this->add(14, 14, 'Q');
@@ -222,14 +235,14 @@ class Santander extends AbstractRemessa implements RemessaContract
     /**
      * @param BoletoContract $boleto
      *
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     public function segmentoR(BoletoContract $boleto)
     {
         $this->iniciaDetalhe();
         $this->add(1, 3, Util::onlyNumbers($this->getCodigoBanco()));
-        $this->add(4, 7, sprintf('%04d', $this->getIdremessa()));
+        $this->add(4, 7, sprintf("%04d", $this->getIdremessa()));
         $this->add(8, 8, '3');
         $this->add(9, 13, Util::formatCnab('9', $this->iRegistrosLote, 5));
         $this->add(14, 14, 'R');
@@ -254,8 +267,8 @@ class Santander extends AbstractRemessa implements RemessaContract
     }
 
     /**
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     protected function header()
     {
@@ -290,7 +303,7 @@ class Santander extends AbstractRemessa implements RemessaContract
      * Retorna o codigo de transmissão.
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function getCodigoTransmissao()
     {
@@ -300,8 +313,8 @@ class Santander extends AbstractRemessa implements RemessaContract
     }
 
     /**
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     protected function headerLote()
     {
@@ -311,7 +324,7 @@ class Santander extends AbstractRemessa implements RemessaContract
          * HEADER DE LOTE
          */
         $this->add(1, 3, Util::onlyNumbers($this->getCodigoBanco()));
-        $this->add(4, 7, sprintf('%04d', $this->getIdremessa()));
+        $this->add(4, 7, sprintf("%04d", $this->getIdremessa()));
         $this->add(8, 8, '1');
         $this->add(9, 9, 'R');
         $this->add(10, 11, '01');
@@ -326,7 +339,7 @@ class Santander extends AbstractRemessa implements RemessaContract
         $this->add(74, 103, Util::formatCnab('X', $this->getBeneficiario()->getNome(), 30));
         $this->add(104, 143, '');
         $this->add(144, 183, '');
-        $this->add(184, 191, sprintf('%08d', $this->getIdremessa()));
+        $this->add(184, 191, sprintf("%08d", $this->getIdremessa()));
         $this->add(192, 199, date('dmY'));
         $this->add(200, 240, '');
 
@@ -334,15 +347,15 @@ class Santander extends AbstractRemessa implements RemessaContract
     }
 
     /**
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     protected function trailerLote()
     {
         $this->iniciaTrailerLote();
 
         $this->add(1, 3, Util::onlyNumbers($this->getCodigoBanco()));
-        $this->add(4, 7, sprintf('%04d', $this->getIdremessa()));
+        $this->add(4, 7, sprintf("%04d", $this->getIdremessa()));
         $this->add(8, 8, '5');
         $this->add(9, 17, '');
         $this->add(18, 23, Util::formatCnab('9', $this->getCountDetalhes() + 2, 6));
@@ -352,8 +365,8 @@ class Santander extends AbstractRemessa implements RemessaContract
     }
 
     /**
-     * @return Santander
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     protected function trailer()
     {

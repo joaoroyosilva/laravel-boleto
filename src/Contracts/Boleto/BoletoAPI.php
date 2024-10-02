@@ -1,5 +1,4 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Contracts\Boleto;
 
 use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
@@ -21,3 +20,4 @@ interface BoletoAPI extends Boleto
      */
     public static function fromAPI($boleto, $appends);
 }
+

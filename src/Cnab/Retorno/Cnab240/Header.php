@@ -3,15 +3,14 @@
 namespace Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240;
 
 use Carbon\Carbon;
-use Eduardokum\LaravelBoleto\MagicTrait;
 use Eduardokum\LaravelBoleto\Contracts\Cnab\Retorno\Cnab240\Header as HeaderContract;
+use Eduardokum\LaravelBoleto\MagicTrait;
 
 class Header implements HeaderContract
 {
     use MagicTrait;
-
     /**
-     * @var int
+     * @var integer
      */
     protected $codBanco;
 
@@ -21,7 +20,7 @@ class Header implements HeaderContract
     protected $nomeBanco;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $codigoRemessaRetorno;
 
@@ -49,7 +48,6 @@ class Header implements HeaderContract
      * @var string
      */
     protected $agencia;
-
     /**
      * @var string
      */
@@ -111,7 +109,7 @@ class Header implements HeaderContract
     /**
      * @param string $loteServico
      *
-     * @return Header
+     * @return $this
      */
     public function setLoteServico($loteServico)
     {
@@ -131,7 +129,7 @@ class Header implements HeaderContract
     /**
      * @param string $tipoRegistro
      *
-     * @return Header
+     * @return $this
      */
     public function setTipoRegistro($tipoRegistro)
     {
@@ -151,7 +149,7 @@ class Header implements HeaderContract
     /**
      * @param string $tipoInscricao
      *
-     * @return Header
+     * @return $this
      */
     public function setTipoInscricao($tipoInscricao)
     {
@@ -171,7 +169,7 @@ class Header implements HeaderContract
     /**
      * @param string $agencia
      *
-     * @return Header
+     * @return $this
      */
     public function setAgencia($agencia)
     {
@@ -191,7 +189,7 @@ class Header implements HeaderContract
     /**
      * @param string $agenciaDv
      *
-     * @return Header
+     * @return $this
      */
     public function setAgenciaDv($agenciaDv)
     {
@@ -211,7 +209,7 @@ class Header implements HeaderContract
     /**
      * @param string $nomeEmpresa
      *
-     * @return Header
+     * @return $this
      */
     public function setNomeEmpresa($nomeEmpresa)
     {
@@ -231,7 +229,7 @@ class Header implements HeaderContract
     /**
      * @param string $horaGeracao
      *
-     * @return Header
+     * @return $this
      */
     public function setHoraGeracao($horaGeracao)
     {
@@ -249,8 +247,9 @@ class Header implements HeaderContract
     }
 
     /**
+     *
      * @param string $numeroSequencialArquivo
-     * @return Header
+     * @return $this
      */
     public function setNumeroSequencialArquivo($numeroSequencialArquivo)
     {
@@ -270,7 +269,7 @@ class Header implements HeaderContract
     /**
      * @param string $versaoLayoutArquivo
      *
-     * @return Header
+     * @return $this
      */
     public function setVersaoLayoutArquivo($versaoLayoutArquivo)
     {
@@ -290,7 +289,7 @@ class Header implements HeaderContract
     /**
      * @param string $numeroInscricao
      *
-     * @return Header
+     * @return $this
      */
     public function setNumeroInscricao($numeroInscricao)
     {
@@ -310,7 +309,7 @@ class Header implements HeaderContract
     /**
      * @param string $conta
      *
-     * @return Header
+     * @return $this
      */
     public function setConta($conta)
     {
@@ -330,7 +329,7 @@ class Header implements HeaderContract
     /**
      * @param string $contaDv
      *
-     * @return Header
+     * @return $this
      */
     public function setContaDv($contaDv)
     {
@@ -350,7 +349,7 @@ class Header implements HeaderContract
     /**
      * @param string $codigoCedente
      *
-     * @return Header
+     * @return $this
      */
     public function setCodigoCedente($codigoCedente)
     {
@@ -376,7 +375,7 @@ class Header implements HeaderContract
      *
      * @param string $format
      *
-     * @return Header
+     * @return $this
      */
     public function setData($data, $format = 'dmY')
     {
@@ -396,7 +395,7 @@ class Header implements HeaderContract
     /**
      * @param string $convenio
      *
-     * @return Header
+     * @return $this
      */
     public function setConvenio($convenio)
     {
@@ -416,7 +415,7 @@ class Header implements HeaderContract
     /**
      * @param int $codBanco
      *
-     * @return Header
+     * @return $this
      */
     public function setCodBanco($codBanco)
     {
@@ -436,7 +435,7 @@ class Header implements HeaderContract
     /**
      * @param int $codigoRemessaRetorno
      *
-     * @return Header
+     * @return $this
      */
     public function setCodigoRemessaRetorno($codigoRemessaRetorno)
     {
@@ -456,7 +455,7 @@ class Header implements HeaderContract
     /**
      * @param string $nomeBanco
      *
-     * @return Header
+     * @return $this
      */
     public function setNomeBanco($nomeBanco)
     {

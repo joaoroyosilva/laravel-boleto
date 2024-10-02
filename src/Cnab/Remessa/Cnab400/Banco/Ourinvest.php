@@ -1,13 +1,11 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
 use Eduardokum\LaravelBoleto\CalculoDV;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\AbstractRemessa;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 use Eduardokum\LaravelBoleto\Contracts\Cnab\Remessa as RemessaContract;
+use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Eduardokum\LaravelBoleto\Util;
 
 class Ourinvest extends AbstractRemessa implements RemessaContract
 {
@@ -15,6 +13,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
     const ESPECIE_NOTA_PROMISSORIA = '02';
     const ESPECIE_DUPLICATA_SERVICO = '12';
     const ESPECIE_OUTROS = '99';
+
     const OCORRENCIA_REMESSA = '01';
     const OCORRENCIA_PEDIDO_BAIXA = '02';
     const OCORRENCIA_CONCESSAO_ABATIMENTO = '04';
@@ -24,6 +23,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
     const OCORRENCIA_SUSTAR_PROTESTO_BAIXAR_TITULO = '18';
     const OCORRENCIA_SUSTAR_PROTESTO_MANTER_TITULO = '19';
     const OCORRENCIA_ALT_OUTROS_DADOS = '31';
+
     const INSTRUCAO_SEM = '00';
 
     public function __construct(array $params = [])
@@ -31,6 +31,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
         parent::__construct($params);
         $this->addCampoObrigatorio('idremessa');
     }
+
 
     /**
      * Código do banco
@@ -44,6 +45,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
      *
      * @var array
      */
+
     protected $carteiras = false;
 
     /**
@@ -62,7 +64,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
 
     /**
      * @return Ourinvest
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function header()
     {
@@ -91,7 +93,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
      * @param \Eduardokum\LaravelBoleto\Boleto\Banco\Bradesco $boleto
      *
      * @return Ourinvest
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function addBoleto(BoletoContract $boleto)
     {
@@ -108,7 +110,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
         $this->add(22, 24, Util::formatCnab('9', $this->getCarteira(), 3));
         $this->add(25, 29, Util::formatCnab('9', $this->getAgencia(), 5));
         $this->add(30, 36, Util::formatCnab('9', $this->getConta(), 7));
-        $this->add(37, 37, ! is_null($this->getContaDv()) ? $this->getContaDv() : CalculoDV::ourinvestConta($this->getConta()));
+        $this->add(37, 37, Util::formatCnab('9', $this->getContaDv() ?: CalculoDV::ourinvestConta($this->getConta()), 1));
         $this->add(38, 62, Util::formatCnab('X', $boleto->getNumeroControle(), 25)); // numero de controle
         $this->add(63, 65, '000');
         $this->add(66, 66, $boleto->getMulta() > 0 ? '2' : '0');
@@ -156,9 +158,9 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
         $this->add(327, 334, Util::formatCnab('9', Util::onlyNumbers($boleto->getPagador()->getCep()), 8));
         $this->add(335, 394, Util::formatCnab('X', '', 60));
         if ($boleto->getSacadorAvalista()) {
-            $this->add(335, 348, Util::formatCnab('9', Util::onlyNumbers($boleto->getSacadorAvalista()->getDocumento()), 14));
-            $this->add(349, 350, Util::formatCnab('X', '', 2));
-            $this->add(351, 394, Util::formatCnab('X', $boleto->getSacadorAvalista()->getNome(), 44));
+            $this->add(335, 349, Util::formatCnab('9', Util::onlyNumbers($boleto->getSacadorAvalista()->getDocumento()), 15));
+            $this->add(350, 351, Util::formatCnab('X', '', 2));
+            $this->add(352, 394, Util::formatCnab('X',  $boleto->getSacadorAvalista()->getNome(), 43));
         }
         $this->add(395, 400, Util::formatCnab('9', $this->iRegistros + 1, 6));
         if ($chaveNfe = $boleto->getChaveNfe()) {
@@ -174,7 +176,7 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
 
     /**
      * @return Ourinvest
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function trailer()
     {
@@ -196,7 +198,11 @@ class Ourinvest extends AbstractRemessa implements RemessaContract
         //?? - variáveis alfanumérico-Numéricas Ex.:
         //01, AB, A1 etc.
         //.Rem – Extensão do arquivo.
-        return sprintf('CB%02s%02s01.REM', date('d'), date('m'));
+        return sprintf(
+            'CB%02s%02s01.REM',
+            date('d'),
+            date('m')
+        );
     }
 
     public function save($path, $suggestName = true)

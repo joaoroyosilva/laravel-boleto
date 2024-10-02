@@ -3,15 +3,14 @@
 namespace Eduardokum\LaravelBoleto\Cnab\Remessa;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Eduardokum\LaravelBoleto\Util;
-use Illuminate\Support\Collection;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Contracts\Pessoa as PessoaContract;
 use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Illuminate\Support\Str;
 
 abstract class AbstractRemessa
 {
+
     const HEADER = 'header';
     const HEADER_LOTE = 'header_lote';
     const DETALHE = 'detalhe';
@@ -21,7 +20,7 @@ abstract class AbstractRemessa
     protected $tamanho_linha = false;
 
     /**
-     * Campos necessários para a remessa
+     * Campos que são necessários para a remessa
      *
      * @var array
      */
@@ -63,21 +62,21 @@ abstract class AbstractRemessa
     ];
 
     /**
-     * Variável com ponteiro para linha que esta sendo editada.
+     * Variavel com ponteiro para linha que esta sendo editada.
      *
      * @var
      */
     protected $atual;
 
     /**
-     * Caractere de fim de linha
+     * Caracter de fim de linha
      *
      * @var string
      */
     protected $fimLinha = "\n";
 
     /**
-     * Caractere de fim de arquivo
+     * Caracter de fim de arquivo
      *
      * @var null
      */
@@ -89,49 +88,42 @@ abstract class AbstractRemessa
      * @var
      */
     protected $idremessa;
-
     /**
      * A data que será informada no header da remessa
      *
      * @var Carbon;
      */
     protected $dataRemessa = null;
-
     /**
      * Agência
      *
      * @var int
      */
     protected $agencia;
-
     /**
      * Dígito da conta
      *
      * @var int
      */
     protected $agenciaDv;
-
     /**
      * Conta
      *
      * @var int
      */
     protected $conta;
-
     /**
      * Dígito da conta
      *
      * @var int
      */
     protected $contaDv;
-
     /**
      * Carteira de cobrança.
      *
      * @var
      */
     protected $carteira;
-
     /**
      * Define as carteiras disponíveis para cada banco
      *
@@ -140,7 +132,7 @@ abstract class AbstractRemessa
     protected $carteiras = [];
 
     /**
-     * Entidade beneficiária (quem está gerando a remessa)
+     * Entidade beneficiario (quem esta gerando a remessa)
      *
      * @var PessoaContract
      */
@@ -186,10 +178,8 @@ abstract class AbstractRemessa
         if (is_null($this->dataRemessa)) {
             return Carbon::now()->format($format);
         }
-
         return $this->dataRemessa->format($format);
     }
-
     /**
      * Seta os campos obrigatórios
      *
@@ -197,7 +187,7 @@ abstract class AbstractRemessa
      */
     protected function setCamposObrigatorios()
     {
-        $args = func_get_args();
+        $args                     = func_get_args();
         $this->camposObrigatorios = [];
         foreach ($args as $arg) {
             $this->addCampoObrigatorio($arg);
@@ -215,8 +205,8 @@ abstract class AbstractRemessa
     {
         $args = func_get_args();
         foreach ($args as $arg) {
-            ! is_array($arg) || call_user_func_array([$this, __FUNCTION__], $arg);
-            ! is_string($arg) || array_push($this->camposObrigatorios, $arg);
+            !is_array($arg) || call_user_func_array([$this, __FUNCTION__], $arg);
+            !is_string($arg) || array_push($this->camposObrigatorios, $arg);
         }
 
         return $this;
@@ -264,7 +254,7 @@ abstract class AbstractRemessa
      * @param $beneficiario
      *
      * @return AbstractRemessa
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function setBeneficiario($beneficiario)
     {
@@ -276,7 +266,7 @@ abstract class AbstractRemessa
     /**
      * Define a agência
      *
-     * @param int $agencia
+     * @param  int $agencia
      *
      * @return AbstractRemessa
      */
@@ -300,7 +290,7 @@ abstract class AbstractRemessa
     /**
      * Define a agência
      *
-     * @param int $agenciaDv
+     * @param  int $agenciaDv
      *
      * @return AbstractRemessa
      */
@@ -324,7 +314,7 @@ abstract class AbstractRemessa
     /**
      * Define o número da conta
      *
-     * @param int $conta
+     * @param  int $conta
      *
      * @return AbstractRemessa
      */
@@ -348,7 +338,7 @@ abstract class AbstractRemessa
     /**
      * Define o dígito verificador da conta
      *
-     * @param int $contaDv
+     * @param  int $contaDv
      *
      * @return AbstractRemessa
      */
@@ -372,15 +362,15 @@ abstract class AbstractRemessa
     /**
      * Define o código da carteira (Com ou sem registro)
      *
-     * @param string $carteira
+     * @param  string $carteira
      *
      * @return AbstractRemessa
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function setCarteira($carteira)
     {
-        if ($this->getCarteiras() !== false && ! in_array($carteira, $this->getCarteiras())) {
-            throw new ValidationException('Carteira não disponível!');
+        if ($this->getCarteiras() !== false && !in_array($carteira, $this->getCarteiras())) {
+            throw new \Exception("Carteira não disponível!");
         }
         $this->carteira = $carteira;
 
@@ -418,11 +408,11 @@ abstract class AbstractRemessa
     }
 
     /**
-     * Método que valida se o banco tem todos os campos obrigatórios preenchidos
+     * Método que valida se o banco tem todos os campos obrigadotorios preenchidos
      *
      * @param $messages
      *
-     * @return bool
+     * @return boolean
      */
     public function isValid(&$messages)
     {
@@ -430,7 +420,6 @@ abstract class AbstractRemessa
             $test = call_user_func([$this, 'get' . Str::camel($campo)]);
             if ($test === '' || is_null($test)) {
                 $messages .= "Campo $campo está em branco";
-
                 return false;
             }
         }
@@ -448,11 +437,11 @@ abstract class AbstractRemessa
     /**
      * Função para adicionar detalhe ao arquivo.
      *
-     * @param BoletoContract $boleto
+     * @param BoletoContract $detalhe
      *
      * @return mixed
      */
-    abstract public function addBoleto(BoletoContract $boleto);
+    abstract public function addBoleto(BoletoContract $detalhe);
 
     /**
      * Função que gera o trailer (footer) do arquivo.
@@ -462,7 +451,7 @@ abstract class AbstractRemessa
     abstract protected function trailer();
 
     /**
-     * Função para adicionar múltiplos boletos.
+     * Função para adicionar multiplos boletos.
      *
      * @param array $boletos
      *
@@ -480,12 +469,12 @@ abstract class AbstractRemessa
     /**
      * Função para add valor a linha nas posições informadas.
      *
-     * @param int $i
-     * @param int $f
+     * @param integer $i
+     * @param integer $f
      * @param         $value
      *
      * @return array
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function add($i, $f, $value)
     {
@@ -505,7 +494,7 @@ abstract class AbstractRemessa
     /**
      * Retorna os detalhes do arquivo
      *
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      */
     protected function getDetalhes()
     {
@@ -526,20 +515,20 @@ abstract class AbstractRemessa
      * Valida se a linha esta correta.
      *
      * @param array $a
-     * @param int $extendido
+     * @param int   $extendido
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function valida(array $a, $extendido = 0)
     {
         if ($this->tamanho_linha === false) {
-            throw new ValidationException('Classe remessa deve informar o tamanho da linha');
+            throw new \Exception('Classe remessa deve informar o tamanho da linha');
         }
 
         $a = array_filter($a, 'mb_strlen');
         if (count($a) != $this->tamanho_linha + $extendido) {
-            throw new ValidationException(sprintf('$a não possui %s posições, possui: %s', $this->tamanho_linha, count($a)));
+            throw new \Exception(sprintf('$a não possui %s posições, possui: %s', $this->tamanho_linha, count($a)));
         }
 
         return implode('', $a);
@@ -549,7 +538,7 @@ abstract class AbstractRemessa
      * Gera o arquivo, retorna a string.
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     abstract public function gerar();
 
@@ -560,17 +549,17 @@ abstract class AbstractRemessa
      * @param bool $suggestName
      *
      * @return mixed
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function save($path, $suggestName = false)
     {
         $folder = dirname($path);
-        if (! is_dir($folder)) {
+        if (!is_dir($folder)) {
             mkdir($folder, 0777, true);
         }
 
-        if (! is_writable(dirname($path))) {
-            throw new ValidationException('Path ' . $folder . ' não possui permissao de escrita');
+        if (!is_writable(dirname($path))) {
+            throw new \Exception('Path ' . $folder . ' não possui permissao de escrita');
         }
 
         if ($suggestName) {
@@ -592,11 +581,11 @@ abstract class AbstractRemessa
     }
 
     /**
-     * Realiza o download da string retornada do método gerar
+     * Realiza o download da string retornada do metodo gerar
      *
      * @param null $filename
      *
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function download($filename = null)
     {

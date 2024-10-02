@@ -1,12 +1,10 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Boleto\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\CalculoDV;
 use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
+use Eduardokum\LaravelBoleto\CalculoDV;
 use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Eduardokum\LaravelBoleto\Util;
 
 class Bnb extends AbstractBoleto implements BoletoContract
 {
@@ -23,7 +21,6 @@ class Bnb extends AbstractBoleto implements BoletoContract
      * @var string
      */
     protected $codigoBanco = self::COD_BANCO_BNB;
-
     /**
      * Variáveis adicionais.
      *
@@ -32,14 +29,12 @@ class Bnb extends AbstractBoleto implements BoletoContract
     public $variaveis_adicionais = [
         'carteira_nome' => '',
     ];
-
     /**
      * Define as carteiras disponíveis para este banco
      *
      * @var array
      */
     protected $carteiras = ['21', '31', '41'];
-
     /**
      * Espécie do documento, coódigo para remessa
      *
@@ -50,25 +45,23 @@ class Bnb extends AbstractBoleto implements BoletoContract
         'NP' => '02',
         'CH' => '03',
         'CN' => '04',
-        'RC' => '05',
+        'RC' => '05'
     ];
-
     /**
-     * Seta dia para baixa automática
+     * Seta dias para baixa automática
      *
      * @param int $baixaAutomatica
      *
-     * @return Bnb
-     * @throws ValidationException
+     * @return $this
+     * @throws \Exception
      */
     public function setDiasBaixaAutomatica($baixaAutomatica)
     {
         if ($this->getDiasProtesto() > 0) {
-            throw new ValidationException('Você deve usar dias de protesto ou dias de baixa, nunca os 2');
+            throw new \Exception('Você deve usar dias de protesto ou dias de baixa, nunca os 2');
         }
         $baixaAutomatica = (int) $baixaAutomatica;
         $this->diasBaixaAutomatica = $baixaAutomatica > 0 ? $baixaAutomatica : 0;
-
         return $this;
     }
 
@@ -76,13 +69,13 @@ class Bnb extends AbstractBoleto implements BoletoContract
      * Gera o Nosso Número.
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function gerarNossoNumero()
     {
-        return Util::numberFormatGeral($this->getNumero(), 7) . CalculoDV::bnbNossoNumero($this->getNumero());
+        $numero_boleto = $this->getNumero();
+        return Util::numberFormatGeral($numero_boleto, 7) . CalculoDV::bnbNossoNumero($this->getNumero());
     }
-
     /**
      * Método que retorna o nosso numero usado no boleto. alguns bancos possuem algumas diferenças.
      *
@@ -97,7 +90,7 @@ class Bnb extends AbstractBoleto implements BoletoContract
      * Método para gerar o código da posição de 20 a 44
      *
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function getCampoLivre()
     {
@@ -107,7 +100,7 @@ class Bnb extends AbstractBoleto implements BoletoContract
 
         $campoLivre = Util::numberFormatGeral($this->getAgencia(), 4);
         $campoLivre .= Util::numberFormatGeral($this->getConta(), 7);
-        $campoLivre .= ! is_null($this->getContaDv()) ? $this->getContaDv() : CalculoDV::bnbContaCorrente($this->getAgencia(), $this->getConta());
+        $campoLivre .= $this->getContaDv() ?: CalculoDV::bnbContaCorrente($this->getAgencia(), $this->getConta());
         $campoLivre .= $this->getNossoNumero();
         $campoLivre .= Util::numberFormatGeral($this->getCarteira(), 2);
         $campoLivre .= '000';
@@ -122,19 +115,18 @@ class Bnb extends AbstractBoleto implements BoletoContract
      *
      * @return array
      */
-    public static function parseCampoLivre($campoLivre)
-    {
+    public static function parseCampoLivre($campoLivre) {
         return [
-            'codigoCliente'   => null,
-            'convenio'        => null,
-            'agenciaDv'       => null,
-            'agencia'         => substr($campoLivre, 0, 4),
-            'contaCorrente'   => substr($campoLivre, 4, 7),
+            'codigoCliente' => null,
+            'convenio' => null,
+            'agenciaDv' => null,
+            'agencia' => substr($campoLivre, 0, 4),
+            'contaCorrente' => substr($campoLivre, 4, 7),
             'contaCorrenteDv' => substr($campoLivre, 11, 1),
-            'nossoNumero'     => substr($campoLivre, 12, 7),
-            'nossoNumeroDv'   => substr($campoLivre, 19, 1),
+            'nossoNumero' => substr($campoLivre, 12, 7),
+            'nossoNumeroDv' => substr($campoLivre, 19, 1),
             'nossoNumeroFull' => substr($campoLivre, 12, 8),
-            'carteira'        => substr($campoLivre, 20, 2),
+            'carteira' => substr($campoLivre, 20, 2),
         ];
     }
 }

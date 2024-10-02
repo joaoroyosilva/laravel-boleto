@@ -1,13 +1,11 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\Banco;
 
 use Carbon\Carbon;
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\AbstractRemessa;
 use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 use Eduardokum\LaravelBoleto\Contracts\Cnab\Remessa as RemessaContract;
+use Eduardokum\LaravelBoleto\Util;
 
 class Sicredi extends AbstractRemessa implements RemessaContract
 {
@@ -21,6 +19,7 @@ class Sicredi extends AbstractRemessa implements RemessaContract
     const ESPECIE_NOTA_DEBITOS = 'I';
     const ESPECIE_NOTA_SERVICOS = 'J';
     const ESPECIE_OUTROS = 'K';
+
     const OCORRENCIA_REMESSA = '01';
     const OCORRENCIA_BAIXA = '02';
     const OCORRENCIA_CONCESSAO_ABATIMENTO = '04';
@@ -30,6 +29,7 @@ class Sicredi extends AbstractRemessa implements RemessaContract
     const OCORRENCIA_SUSTAR_PROTESTO = '18';
     const OCORRENCIA_SUSTAR_PROTESTO_MANTER_CARTEIRA = '19';
     const OCORRENCIA_ALT_OUTROS_DADOS = '31';
+
     const INSTRUCAO_SEM = '00';
     const INSTRUCAO_PROTESTO = '06';
 
@@ -50,7 +50,6 @@ class Sicredi extends AbstractRemessa implements RemessaContract
     public function setCarteira($carteira)
     {
         $this->carteira = 'A';
-
         return $this;
     }
 
@@ -89,7 +88,7 @@ class Sicredi extends AbstractRemessa implements RemessaContract
      */
     protected $codigoCliente;
 
-    /**
+     /**
      * Retorna o codigo do cliente.
      *
      * @return mixed
@@ -115,7 +114,7 @@ class Sicredi extends AbstractRemessa implements RemessaContract
 
     /**
      * @return Sicredi
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function header()
     {
@@ -145,12 +144,12 @@ class Sicredi extends AbstractRemessa implements RemessaContract
      * @param \Eduardokum\LaravelBoleto\Boleto\Banco\Sicredi $boleto
      *
      * @return Sicredi
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function addBoleto(BoletoContract $boleto)
     {
         $this->boletos[] = $boleto;
-        if (! $boleto->isComRegistro()) {
+        if (!$boleto->isComRegistro()) {
             return $this;
         }
 
@@ -249,7 +248,7 @@ class Sicredi extends AbstractRemessa implements RemessaContract
 
     /**
      * @return Sicredi
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function trailer()
     {

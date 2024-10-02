@@ -1,9 +1,9 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Api\Exception;
 
-use Eduardokum\LaravelBoleto\Exception\BaseException;
+use Exception;
 
-class CurlException extends BaseException
+class CurlException extends Exception
 {
+
 }

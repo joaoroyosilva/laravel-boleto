@@ -3,13 +3,12 @@
 namespace Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240;
 
 use Carbon\Carbon;
-use Eduardokum\LaravelBoleto\MagicTrait;
 use Eduardokum\LaravelBoleto\Contracts\Cnab\Retorno\Cnab240\HeaderLote as HeaderLoteContract;
+use Eduardokum\LaravelBoleto\MagicTrait;
 
 class HeaderLote implements HeaderLoteContract
 {
     use MagicTrait;
-
     /**
      * @var string
      */
@@ -121,7 +120,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $codigoBanco
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setCodigoBanco($codigoBanco)
     {
@@ -141,7 +140,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $tipoRegistro
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setTipoRegistro($tipoRegistro)
     {
@@ -161,7 +160,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $codBanco
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setCodBanco($codBanco)
     {
@@ -181,7 +180,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $numeroLoteRetorno
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setNumeroLoteRetorno($numeroLoteRetorno)
     {
@@ -199,8 +198,9 @@ class HeaderLote implements HeaderLoteContract
     }
 
     /**
+     *
      * @param string $tipoOperacao
-     * @return HeaderLote
+     * @return $this
      */
     public function setTipoOperacao($tipoOperacao)
     {
@@ -208,6 +208,7 @@ class HeaderLote implements HeaderLoteContract
 
         return $this;
     }
+
 
     /**
      * @return string
@@ -220,7 +221,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $tipoServico
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setTipoServico($tipoServico)
     {
@@ -228,6 +229,7 @@ class HeaderLote implements HeaderLoteContract
 
         return $this;
     }
+
 
     /**
      * @return string
@@ -240,7 +242,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $versaoLayoutLote
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setVersaoLayoutLote($versaoLayoutLote)
     {
@@ -248,6 +250,7 @@ class HeaderLote implements HeaderLoteContract
 
         return $this;
     }
+
 
     /**
      * @return string
@@ -258,9 +261,10 @@ class HeaderLote implements HeaderLoteContract
     }
 
     /**
+     *
      * @param $tipoInscricao
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setTipoInscricao($tipoInscricao)
     {
@@ -268,6 +272,7 @@ class HeaderLote implements HeaderLoteContract
 
         return $this;
     }
+
 
     /**
      * @return string
@@ -280,7 +285,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $numeroInscricao
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setNumeroInscricao($numeroInscricao)
     {
@@ -300,7 +305,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $codigoCedente
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setCodigoCedente($codigoCedente)
     {
@@ -320,7 +325,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $convenio
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setConvenio($convenio)
     {
@@ -340,7 +345,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $nomeEmpresa
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setNomeEmpresa($nomeEmpresa)
     {
@@ -374,7 +379,7 @@ class HeaderLote implements HeaderLoteContract
      *
      * @param string $format
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setDataGravacao($dataGravacao, $format = 'dmY')
     {
@@ -400,7 +405,7 @@ class HeaderLote implements HeaderLoteContract
      *
      * @param string $format
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setDataCredito($dataCredito, $format = 'dmY')
     {
@@ -420,7 +425,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $agencia
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setAgencia($agencia)
     {
@@ -428,6 +433,7 @@ class HeaderLote implements HeaderLoteContract
 
         return $this;
     }
+
 
     /**
      * @return string
@@ -440,7 +446,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $agenciaDv
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setAgenciaDv($agenciaDv)
     {
@@ -460,7 +466,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $conta
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setConta($conta)
     {
@@ -480,7 +486,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $numeroRetorno
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setNumeroRetorno($numeroRetorno)
     {
@@ -500,7 +506,7 @@ class HeaderLote implements HeaderLoteContract
     /**
      * @param string $contaDv
      *
-     * @return HeaderLote
+     * @return $this
      */
     public function setContaDv($contaDv)
     {

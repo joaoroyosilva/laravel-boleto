@@ -1,5 +1,4 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Contracts\Boleto\Render;
 
 interface Html
@@ -7,6 +6,4 @@ interface Html
     public function getImagemCodigoDeBarras($codigo_barras);
 
     public function gerarBoleto();
-
-    public function setLocalizacaoPix($localizacao);
 }

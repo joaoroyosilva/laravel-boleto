@@ -1,12 +1,10 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\AbstractRemessa;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 use Eduardokum\LaravelBoleto\Contracts\Cnab\Remessa as RemessaContract;
+use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Eduardokum\LaravelBoleto\Util;
 
 class Inter extends AbstractRemessa implements RemessaContract
 {
@@ -17,6 +15,7 @@ class Inter extends AbstractRemessa implements RemessaContract
         parent::__construct($params);
         $this->addCampoObrigatorio('idremessa');
     }
+
 
     /**
      * Código do banco
@@ -30,6 +29,7 @@ class Inter extends AbstractRemessa implements RemessaContract
      *
      * @var array
      */
+
     protected $carteiras = ['112'];
 
     /**
@@ -48,7 +48,7 @@ class Inter extends AbstractRemessa implements RemessaContract
 
     /**
      * @return Inter
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function header()
     {
@@ -77,7 +77,7 @@ class Inter extends AbstractRemessa implements RemessaContract
      * @param \Eduardokum\LaravelBoleto\Boleto\Banco\Inter $boleto
      *
      * @return Inter
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function addBoleto(BoletoContract $boleto)
     {
@@ -145,7 +145,7 @@ class Inter extends AbstractRemessa implements RemessaContract
 
     /**
      * @return Inter
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function trailer()
     {
@@ -160,16 +160,20 @@ class Inter extends AbstractRemessa implements RemessaContract
 
     public function nomeSugerido()
     {
-        //          CI400_001_???????.REM
-        //          CI400 - Cobrança Inter
-        //          001 - Versão do layout
-        //          ??????? - Número sequencial de remessa com sete caracteres (o mesmo número inserido no campo 111 a 117 do header do arquivo remesssa)
-        //          .REM - Extensão do arquivo remessa
-        return sprintf('CI400_001_%07s.REM', $this->getIdremessa());
+//          CI400_001_???????.REM
+//          CI400 - Cobrança Inter
+//          001 - Versão do layout
+//          ??????? - Número sequencial de remessa com sete caracteres (o mesmo número inserido no campo 111 a 117 do header do arquivo remesssa)
+//          .REM - Extensão do arquivo remessa
+        return sprintf(
+            'CI400_001_%07s.REM',
+            $this->getIdremessa()
+        );
     }
 
     public function save($path, $suggestName = true)
     {
         return parent::save($path, $suggestName);
     }
+
 }

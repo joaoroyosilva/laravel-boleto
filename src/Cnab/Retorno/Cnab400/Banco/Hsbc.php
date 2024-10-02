@@ -1,13 +1,11 @@
 <?php
-
 namespace Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab400\Banco;
 
-use Illuminate\Support\Arr;
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Contracts\Cnab\RetornoCnab400;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
 use Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab400\AbstractRetorno;
 use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Eduardokum\LaravelBoleto\Contracts\Cnab\RetornoCnab400;
+use Eduardokum\LaravelBoleto\Util;
+use Illuminate\Support\Arr;
 
 class Hsbc extends AbstractRetorno implements RetornoCnab400
 {
@@ -160,12 +158,12 @@ class Hsbc extends AbstractRetorno implements RetornoCnab400
     {
         $this->totais = [
             'valor_recebido' => 0,
-            'liquidados'     => 0,
-            'entradas'       => 0,
-            'baixados'       => 0,
-            'protestados'    => 0,
-            'erros'          => 0,
-            'alterados'      => 0,
+            'liquidados' => 0,
+            'entradas' => 0,
+            'baixados' => 0,
+            'protestados' => 0,
+            'erros' => 0,
+            'alterados' => 0,
         ];
     }
 
@@ -173,7 +171,7 @@ class Hsbc extends AbstractRetorno implements RetornoCnab400
      * @param array $header
      *
      * @return bool
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function processarHeader(array $header)
     {
@@ -194,7 +192,7 @@ class Hsbc extends AbstractRetorno implements RetornoCnab400
      * @param array $detalhe
      *
      * @return bool
-     * @throws ValidationException
+     * @throws \Exception
      */
     protected function processarDetalhe(array $detalhe)
     {
@@ -207,12 +205,12 @@ class Hsbc extends AbstractRetorno implements RetornoCnab400
             ->setOcorrenciaDescricao(Arr::get($this->ocorrencias, $d->getOcorrencia(), 'Desconhecida'))
             ->setDataOcorrencia($this->rem(111, 116, $detalhe))
             ->setDataVencimento($this->rem(147, 152, $detalhe))
-            ->setValor(Util::nFloat($this->rem(153, 165, $detalhe) / 100, 2, false))
-            ->setValorTarifa(Util::nFloat($this->rem(176, 188, $detalhe) / 100, 2, false))
-            ->setValorAbatimento(Util::nFloat($this->rem(228, 240, $detalhe) / 100, 2, false))
-            ->setValorDesconto(Util::nFloat($this->rem(241, 253, $detalhe) / 100, 2, false))
-            ->setValorRecebido(Util::nFloat($this->rem(254, 266, $detalhe) / 100, 2, false))
-            ->setValorMora(Util::nFloat($this->rem(267, 279, $detalhe) / 100, 2, false));
+            ->setValor(Util::nFloat($this->rem(153, 165, $detalhe)/100, 2, false))
+            ->setValorTarifa(Util::nFloat($this->rem(176, 188, $detalhe)/100, 2, false))
+            ->setValorAbatimento(Util::nFloat($this->rem(228, 240, $detalhe)/100, 2, false))
+            ->setValorDesconto(Util::nFloat($this->rem(241, 253, $detalhe)/100, 2, false))
+            ->setValorRecebido(Util::nFloat($this->rem(254, 266, $detalhe)/100, 2, false))
+            ->setValorMora(Util::nFloat($this->rem(267, 279, $detalhe)/100, 2, false));
 
         $this->totais['valor_recebido'] += $d->getValorRecebido();
 

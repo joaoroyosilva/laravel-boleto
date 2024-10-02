@@ -104,35 +104,12 @@ interface Detalhe
     public function getError();
 
     /**
-     * @return mixed
-     */
-    public function getId();
-
-    /**
-     * @return mixed
-     */
-    public function getPixLocation();
-
-    /**
-     * @return mixed
-     */
-    public function getPixQrCode();
-
-    /**
-     * @param $nome
-     * @param $cidade
-     * @param $force
-     * @return mixed
-     */
-    public function gerarPixCopiaECola($nome, $cidade, $force = false);
-
-    /**
-     * @return bool
+     * @return boolean
      */
     public function hasError();
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function hasOcorrencia();
 
